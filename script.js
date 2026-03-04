@@ -2,12 +2,12 @@ const personagens = [
     {
         nome: "Medusa",
         cor: "#2ecc71",
-        cardback: "/cardback/medusa.png", // Adicione os caminhos corretos aqui
+        cardback: "medusa.png", // Adicione os caminhos corretos aqui
         hpMax: 16,
         tokens: [
-            { nome: "Harpia 1", img: "/tokens/harpias.png" },
-            { nome: "Harpia 2", img: "/tokens/harpias.png" },
-            { nome: "Harpia 3", img: "/tokens/harpias.png" }
+            { nome: "Harpia 1", img: "harpias.png" },
+            { nome: "Harpia 2", img: "harpias.png" },
+            { nome: "Harpia 3", img: "harpias.png" }
         ],
         classeToken: "token-medusa",
         tipoToken: "multi",
@@ -16,10 +16,10 @@ const personagens = [
     {
         nome: "Alice",
         cor: "#3498db",
-        cardback: "/cardback/alice.png",
+        cardback: "alice.png",
         hpMax: 13,
         tokensEspeciais: [
-            { tipo: "flip", faceA: "/tokens/grande.png", faceB: "/tokens/pequena.png" }
+            { tipo: "flip", faceA: "grande.png", faceB: "pequena.png" }
         ],
         tokens: [], 
         assistente: { nome: "Jabberwock", hpMax: 8 }    
@@ -27,11 +27,11 @@ const personagens = [
     {
         nome: "Nikola Tesla",
         cor: "#ff7b00", 
-        cardback: "/cardback/nicolas.png",
+        cardback: "nicolas.png",
         hpMax: 15,
         tokensEspeciais: [
-            { tipo: "flip", faceA: "/tokens/descarregado.png", faceB: "/tokens/carregado.png" },
-            { tipo: "flip", faceA: "/tokens/descarregado.png", faceB: "/tokens/carregado.png" }
+            { tipo: "flip", faceA: "descarregado.png", faceB: "carregado.png" },
+            { tipo: "flip", faceA: "descarregado.png", faceB: "carregado.png" }
         ],
         tokens: [], 
         assistente: null 
@@ -39,16 +39,16 @@ const personagens = [
     {
         nome: "Sinbad",
         cor: "#ff7300",
-        cardback: "/cardback/sinbad.png",
+        cardback: "sinbad.png",
         hpMax: 15,
-        tokens: Array(8).fill({ nome: "viagens", img: "/tokens/viagens.png" }),
+        tokens: Array(8).fill({ nome: "viagens", img: "viagens.png" }),
         classeToken: "",
         assistente: { nome: "Porter ", hpMax: 6 }
     },
     {
         nome: "👑lampião👑",
         cor: "#ff3300",
-        cardback: "/cardback/lampiao.png",
+        cardback: "lampiao.png",
         hpMax: 15,
         tokens: [],
         assistente: { nome: "GOAT corrisco ", hpMax: 6 }
@@ -56,7 +56,7 @@ const personagens = [
     {
         nome: "sherlock homes",
         cor: "#ffe600ff",
-        cardback: "/cardback/sherlock.png",
+        cardback: "sherlock.png",
         hpMax: 16,
         classeToken: "",
         assistente: { nome: "Dr. Watson ", hpMax: 8 }
@@ -185,4 +185,5 @@ function mudarHP(id, valor) {
 }
 
 // Inicialização
+
 popularSelecao();
