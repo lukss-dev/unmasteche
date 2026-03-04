@@ -1,0 +1,435 @@
+:root {
+    --bg-dark: #121212;
+    --card-bg: #1e1e1e;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.battlefield {
+    display: flex;
+    min-height: 100vh;
+    gap: 5px;
+}
+
+.player-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #333;
+}
+
+/* Cores de fundo diferentes para distinguir os lados */
+#p1-area { background: linear-gradient(to bottom, #1a1a1a, #121212); }
+#p2-area { background: linear-gradient(to bottom, #222, #121212); }
+
+.setup { width: 100%; margin-bottom: 20px; }
+
+select {
+    width: 100%;
+    padding: 12px;
+    background: #333;
+    color: white;
+    border: 2px solid #555;
+    border-radius: 5px;
+}
+
+.painel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.card h2 { margin: 0; font-size: 1rem; opacity: 0.7; text-transform: uppercase; }
+.hp-val { font-size: 4rem; font-weight: 900; margin: 5px 0; color: #f1c40f; }
+
+.controles { display: flex; justify-content: center; gap: 10px; }
+
+.btn-hp {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: #444;
+    color: white;
+}
+
+.btn-hp:active { transform: scale(0.9); background: #f1c40f; color: black; }
+
+.tokens-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-token {
+    padding: 8px 12px;
+    border-radius: 15px;
+    border: 1px solid #555;
+    background: transparent;
+    color: #999;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.btn-token.active { background: #555; color: white; border-color: white; }
+
+/* Ajuste para telas pequenas (celular em pé) */
+@media (max-width: 600px) {
+    .battlefield { flex-direction: column; }
+    .player-column { border: none; border-bottom: 2px solid #333; }
+}
+
+
+
+/* Container de Tokens */
+.tokens-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+/* Estilo Base do Token (Parece uma ficha) */
+.btn-token {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: #333;
+    color: #888;
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Efeito de Clique / Ativado */
+.btn-token.active {
+    color: white;
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* --- Cores por Tipo de Personagem --- */
+
+/* Ex: Estilo Medusa (Verde/Veneno) */
+.token-medusa.active {
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);;
+}
+
+/* Ex: Estilo Sinbad (Laranja/Aventura) */
+.token-sinbad.active {
+    background: linear-gradient(145deg, #d35400, #e67e22);
+    border-radius: 50%; /* Fica redondo como uma moeda */
+    width: 45px;
+    height: 45px;
+    padding: 0;
+}
+
+/* Ex: Estilo Alice (Azul/Mudança de Tamanho) */
+.token-alice.active {
+    background: linear-gradient(145deg, #2980b9, #3498db);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); /* Formato de Pentágono */
+}
+
+/* Ex: Estilo Arthur (Dourado/Sagrado) */
+.token-arthur.active {
+    background: linear-gradient(145deg, #f1c40f, #f39c12);
+    color: #000;
+    border: 2px solid #fff;
+}
+
+
+.btn-token {
+    width: 60px;  /* Tamanho fixo para os tokens de imagem */
+    height: 60px;
+    padding: 0;   /* Remove o padding para a imagem encostar na borda */
+    overflow: hidden; /* Garante que a imagem não saia do botão */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #333;
+    border: 2px solid transparent;
+}
+
+.btn-token img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+    filter: grayscale(100%); /* Deixa a imagem cinza quando desativada */
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+/* Quando o token estiver ativo */
+.btn-token.active {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+.btn-token.active img {
+    filter: grayscale(0%); /* A imagem ganha cor */
+    opacity: 1;
+    transform: scale(1.1); /* Dá um leve zoom */
+}
+
+
+/* Container principal do giro */
+/* Container que agrupa os tokens */
+.tokens-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* O botão do Token (Inativo) */
+.btn-token {
+    width: 100px;           /* Tamanho bem grande */
+    height: 100px;
+    border-radius: 50%;     /* Deixa redondo como uma ficha */
+    border: 4px solid #444;
+    background-color: #222;
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* A imagem dentro do Token (Inativo) */
+.btn-token img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%); /* Fica totalmente cinza */
+    opacity: 0.4;            /* Fica meio apagado */
+    transition: all 0.3s ease;
+}
+
+/* --- ESTADO ATIVO (Quando clicado) --- */
+
+.btn-token.active {
+    border-color: #fff;      /* Borda branca para destacar */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Brilho em volta */
+    transform: scale(1.05);  /* Dá um leve aumento ao ativar */
+}
+
+.btn-token.active img {
+    filter: grayscale(0%);   /* A cor volta ao normal */
+    opacity: 1;              /* Brilho total da imagem */
+}
+
+/* Efeito de hover para parecer interativo */
+.btn-token:hover {
+    border-color: #666;
+}
+
+/* =========================================
+   TOKENS DE GIRO ESTILO PREMIUM (CORRIGIDO)
+   ========================================= */
+
+.flip-container {
+    perspective: 1000px;
+    width: 100px; 
+    height: 100px;
+    margin: 10px;
+    cursor: pointer;
+    display: inline-block;
+    position: relative; /* Garante o alinhamento dos filhos */
+}
+
+.flipper {
+    transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* O giro propriamente dito */
+.flip-container.flipped .flipper {
+    transform: rotateY(180deg);
+}
+
+.front, .back {
+    width: 100%;
+    height: 100%;
+    position: absolute; /* Um em cima do outro */
+    top: 0;
+    left: 0;
+    backface-visibility: hidden; /* CRUCIAL: Esconde o que está de costas */
+    border-radius: 50%;
+    border: 4px solid #444;
+    background-color: #222;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+}
+
+/* Face da frente (Posição Inicial) */
+.front {
+    z-index: 2;
+    transform: rotateY(0deg);
+}
+
+/* Face de trás (Invertida por padrão) */
+.back {
+    transform: rotateY(180deg); /* Já começa "de costas" */
+    border-color: #f1c40f; /* Cor diferente para você saber que virou */
+}
+
+/* Imagens */
+.front img, .back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0%); /* Mantém colorido para ficar bonito */
+    opacity: 1;
+}
+
+/* Efeito de Vidro/Brilho (Igual da Medusa) */
+.front::after, .back::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%);
+    pointer-events: none;
+}
+
+/* Quando estiver ATIVO (brilho externo) */
+.flip-container:not(.flipped) .front {
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.flip-container.flipped .back {
+    border-color: #f1c40f;
+    box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+}
+
+.selecao-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.card-option {
+    width: 85px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.card-name {
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    color: #888;
+    text-align: center;
+}
+
+.card-back-img {
+    width: 100%;
+    height: 120px;
+    border: 2px solid #444;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #111;
+    transition: all 0.3s;
+}
+
+.card-back-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.5); /* Cinza e escuro por padrão */
+}
+
+/* Quando passar o rato ou selecionar */
+.card-option:hover .card-back-img {
+    border-color: #777;
+}
+
+.card-option.selected .card-name {
+    color: #fff;
+}
+
+.card-option.selected .card-back-img {
+    border-color: #fff;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+}
+
+.card-option.selected .card-back-img img {
+    filter: grayscale(0%) brightness(1); /* Ganha cor e luz ao ser escolhido */
+}
+
+
+.battlefield {
+    display: flex;
+    flex-direction: row; /* Força ficar lado a lado */
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;       /* Ocupa a largura total da tela */
+    min-height: 100vh;
+    gap: 0;             /* Remove espaços estranhos entre as colunas */
+    margin: 0;
+    padding: 0;
+}
+
+.player-column {
+    flex: 1;            /* Faz cada coluna ocupar exatamente 50% */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    border: 1px solid #333; /* Uma linha fina para separar os lados */
+    box-sizing: border-box;
+}
+
+/* Garante que o painel ocupe a largura da coluna dele */
+.painel {
+    width: 100%;
+    max-width: 500px; /* Evita que o contador fique gigante em telas largas */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
