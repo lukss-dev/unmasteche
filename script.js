@@ -1,18 +1,15 @@
-// ===============================
-// LISTA DE PERSONAGENS
-// ===============================
-
 const personagens = [
     {
         nome: "Medusa",
         cor: "#2ecc71",
-        cardback: "medusa.png",
+        cardback: "medusa.png", // Adicione os caminhos corretos aqui
         hpMax: 16,
         tokens: [
             { nome: "Harpia 1", img: "harpias.png" },
             { nome: "Harpia 2", img: "harpias.png" },
             { nome: "Harpia 3", img: "harpias.png" }
         ],
+        classeToken: "token-medusa",
         tipoToken: "multi",
         assistente: { nome: "Harpias", hpMax: 0 }
     },
@@ -22,210 +19,170 @@ const personagens = [
         cardback: "alice.png",
         hpMax: 13,
         tokensEspeciais: [
-            { faceA: "grande.png", faceB: "pequena.png" }
+            { tipo: "flip", faceA: "grande.png", faceB: "pequena.png" }
         ],
-        assistente: { nome: "Jabberwock", hpMax: 8 }
+        tokens: [], 
+        assistente: { nome: "Jabberwock", hpMax: 8 }    
     },
     {
         nome: "Nikola Tesla",
-        cor: "#ff7b00",
+        cor: "#ff7b00", 
         cardback: "nicolas.png",
         hpMax: 15,
         tokensEspeciais: [
-            { faceA: "descarregado.png", faceB: "carregado.png" },
-            { faceA: "descarregado.png", faceB: "carregado.png" }
+            { tipo: "flip", faceA: "descarregado.png", faceB: "carregado.png" },
+            { tipo: "flip", faceA: "descarregado.png", faceB: "carregado.png" }
         ],
-        assistente: null
+        tokens: [], 
+        assistente: null 
     },
     {
         nome: "Sinbad",
         cor: "#ff7300",
         cardback: "sinbad.png",
         hpMax: 15,
-        tokens: Array.from({ length: 8 }, () => ({
-            nome: "Viagem",
-            img: "viagens.png"
-        })),
-        tipoToken: "multi",
-        assistente: { nome: "Porter", hpMax: 6 }
+        tokens: Array(8).fill({ nome: "viagens", img: "viagens.png" }),
+        classeToken: "",
+        assistente: { nome: "Porter ", hpMax: 6 }
     },
     {
-        nome: "Lampião",
+        nome: "👑lampião👑",
         cor: "#ff3300",
         cardback: "lampiao.png",
         hpMax: 15,
         tokens: [],
-        assistente: { nome: "Corrisqueiro", hpMax: 6 }
+        assistente: { nome: "GOAT corrisco ", hpMax: 6 }
     },
     {
-        nome: "Sherlock Holmes",
-        cor: "#ffe600",
+        nome: "sherlock homes",
+        cor: "#ffe600ff",
         cardback: "sherlock.png",
         hpMax: 16,
-        tokens: [],
-        assistente: { nome: "Dr. Watson", hpMax: 8 }
+        classeToken: "",
+        assistente: { nome: "Dr. Watson ", hpMax: 8 }
     }
 ];
 
-// ===============================
-// INICIALIZAÇÃO
-// ===============================
+// 1. Gera as cartas de seleção na tela
+function popularSelecao() {
+    const containers = [
+        { id: 'escolha-p1', player: 1 },
+        { id: 'escolha-p2', player: 2 }
+    ];
 
-document.addEventListener("DOMContentLoaded", () => {
-    popularSelecao(1);
-    popularSelecao(2);
-});
+    containers.forEach(cont => {
+        const div = document.getElementById(cont.id);
+        if (!div) return;
+        div.innerHTML = ''; 
 
-// ===============================
-// TELA DE SELEÇÃO
-// ===============================
-
-function popularSelecao(playerNum) {
-    const container = document.getElementById(`escolha-p${playerNum}`);
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    personagens.forEach((p, index) => {
-        const card = document.createElement("div");
-        card.className = "card-option";
-
-        card.innerHTML = `
-            <div class="card-back-img">
-                <img src="${p.cardback}" alt="${p.nome}">
-            </div>
-            <span class="card-name">${p.nome}</span>
-        `;
-
-        card.addEventListener("click", () => {
-            selecionarHeroi(playerNum, index);
-            container.querySelectorAll(".card-option")
-                .forEach(c => c.classList.remove("selected"));
-            card.classList.add("selected");
+        personagens.forEach((p, index) => {
+            div.innerHTML += `
+                <div class="card-option" onclick="selecionarHeroi(${cont.player}, ${index}, this)">
+                    <div class="card-back-img">
+                        <img src="${p.cardback || 'default.png'}" alt="${p.nome}">
+                    </div>
+                    <span class="card-name">${p.nome}</span>
+                </div>
+            `;
         });
-
-        container.appendChild(card);
     });
 }
 
-// ===============================
-// CARREGAR LUTADOR
-// ===============================
+// 2. Gerencia o clique na carta
+function selecionarHeroi(playerNum, index, elemento) {
+    const pai = elemento.parentElement;
+    pai.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+    elemento.classList.add('selected');
 
-function selecionarHeroi(playerNum, index) {
-    const personagem = personagens[index];
-    const painel = document.getElementById(`painel-p${playerNum}`);
-    const area = document.getElementById(`p${playerNum}-area`);
-
-    if (!personagem || !painel) return;
-
-    if (area) {
-        area.style.borderTop = `10px solid ${personagem.cor}`;
-    }
-
-    painel.innerHTML = "";
-    painel.appendChild(criarCardHP(personagem.nome, personagem.hpMax, `p${playerNum}-hero`));
-
-    if (personagem.assistente && personagem.assistente.hpMax > 0) {
-        painel.appendChild(
-            criarCardHP(personagem.assistente.nome, personagem.assistente.hpMax, `p${playerNum}-ast`)
-        );
-    }
-
-    if (personagem.tokensEspeciais) {
-        painel.appendChild(criarTokensEspeciais(personagem.tokensEspeciais));
-    }
-
-    if (personagem.tokens) {
-        painel.appendChild(criarTokensNormais(personagem.tokens, personagem.tipoToken));
-    }
+    carregarLutador(playerNum, index);
 }
 
-// ===============================
-// COMPONENTES
-// ===============================
+// 3. Monta o painel do personagem escolhido
+function carregarLutador(playerNum, index) {
+    const painel = document.getElementById(`painel-p${playerNum}`);
+    const p = personagens[index];
 
-function criarCardHP(nome, hp, id) {
-    const card = document.createElement("div");
-    card.className = "card";
+    if (!p) return;
 
-    card.innerHTML = `
-        <h2>${nome}</h2>
-        <div class="hp-val" id="hp-${id}">${hp}</div>
-        <div class="controles">
-            <button class="btn-hp">-</button>
-            <button class="btn-hp">+</button>
+    // Borda colorida no topo da coluna
+    const area = document.getElementById(`p${playerNum}-area`);
+    if(area) area.style.borderTop = `10px solid ${p.cor}`;
+
+    let html = `
+        <div class="card">
+            <h2>${p.nome}</h2>
+            <div class="hp-val" id="hp-p${playerNum}-hero">${p.hpMax}</div>
+            <div class="controles">
+                <button class="btn-hp" onclick="mudarHP('hp-p${playerNum}-hero', -1)">-</button>
+                <button class="btn-hp" onclick="mudarHP('hp-p${playerNum}-hero', 1)">+</button>
+            </div>
         </div>
     `;
 
-    const botoes = card.querySelectorAll(".btn-hp");
-    botoes[0].addEventListener("click", () => mudarHP(`hp-${id}`, -1));
-    botoes[1].addEventListener("click", () => mudarHP(`hp-${id}`, 1));
-
-    return card;
-}
-
-function criarTokensEspeciais(lista) {
-    const container = document.createElement("div");
-    container.className = "tokens-container";
-
-    lista.forEach(token => {
-        const flip = document.createElement("div");
-        flip.className = "flip-container";
-
-        flip.innerHTML = `
-            <div class="flipper">
-                <div class="front"><img src="${token.faceA}"></div>
-                <div class="back"><img src="${token.faceB}"></div>
+    if (p.assistente && p.assistente.hpMax > 0) {
+        html += `
+            <div class="card">
+                <h2>${p.assistente.nome}</h2>
+                <div class="hp-val" style="font-size: 2.5rem" id="hp-p${playerNum}-ast">${p.assistente.hpMax}</div>
+                <div class="controles">
+                    <button class="btn-hp" style="width:45px; height:45px" onclick="mudarHP('hp-p${playerNum}-ast', -1)">-</button>
+                    <button class="btn-hp" style="width:45px; height:45px" onclick="mudarHP('hp-p${playerNum}-ast', 1)">+</button>
+                </div>
             </div>
         `;
+    }
 
-        flip.addEventListener("click", () => {
-            flip.classList.toggle("flipped");
+    // Tokens Especiais (Alice/Tesla)
+    if (p.tokensEspeciais && p.tokensEspeciais.length > 0) {
+        html += `<div class="tokens-container">`;
+        p.tokensEspeciais.forEach(especial => {
+            html += `
+                <div class="flip-container" onclick="this.classList.toggle('flipped')">
+                    <div class="flipper">
+                        <div class="front"><img src="${especial.faceA}"></div>
+                        <div class="back"><img src="${especial.faceB}"></div>
+                    </div>
+                </div>
+            `;
         });
+        html += `</div>`;
+    }
 
-        container.appendChild(flip);
-    });
+    // Tokens Normais (Medusa/Sinbad)
+    if (p.tokens && p.tokens.length > 0) {
+        html += `<div class="tokens-container">`;
+        p.tokens.forEach(t => {
+            html += `
+                <button class="btn-token ${p.classeToken || ''}" 
+                        onclick="gerenciarToken(this, ${playerNum}, '${p.tipoToken || 'multi'}')">
+                    <img src="${t.img}" alt="${t.nome}">
+                </button>`;
+        });
+        html += `</div>`;
+    }
 
-    return container;
+    painel.innerHTML = html;
 }
 
-function criarTokensNormais(lista, tipo) {
-    const container = document.createElement("div");
-    container.className = "tokens-container";
-
-    lista.forEach(token => {
-        const btn = document.createElement("button");
-        btn.className = "btn-token";
-
-        btn.innerHTML = `<img src="${token.img}" alt="${token.nome}">`;
-
-        btn.addEventListener("click", () => {
-            if (tipo === "unique") {
-                container.querySelectorAll(".btn-token")
-                    .forEach(b => b.classList.remove("active"));
-            }
-            btn.classList.toggle("active");
+// 4. Funções Auxiliares
+function gerenciarToken(btn, playerNum, tipo) {
+    if (tipo === "unique") {
+        const container = btn.parentElement;
+        container.querySelectorAll('.btn-token').forEach(b => {
+            if (b !== btn) b.classList.remove('active');
         });
-
-        container.appendChild(btn);
-    });
-
-    return container;
+    }
+    btn.classList.toggle('active');
 }
-
-// ===============================
-// UTILIDADES
-// ===============================
 
 function mudarHP(id, valor) {
     const el = document.getElementById(id);
     if (!el) return;
-
     let atual = parseInt(el.innerText);
     atual += valor;
-
     if (atual < 0) atual = 0;
-
     el.innerText = atual;
 }
+
+// Inicialização
+popularSelecao();
