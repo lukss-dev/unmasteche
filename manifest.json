@@ -1,20 +1,20 @@
 {
-  "name": "Contador de Vida Unmatched",
-  "short_name": "Unmatched HP",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "short_name": "NomeCurto",
+  "name": "Nome Completo do Meu Site",
   "icons": [
     {
-      "src": "IMG-20260308-WA0000.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg"
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
-      "src": "IMG-20260308-WA0000.jpg",
-      "sizes": "512x512",
-      "type": "image/jpeg"
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "/",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "theme_color": "#000000"
 }
